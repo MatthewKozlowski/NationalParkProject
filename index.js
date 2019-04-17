@@ -68,6 +68,9 @@ function watchForm2(){
     event.preventDefault();
     let searchTerm = $('#js-search-term2').val();
     maxResults = $('#js-max-results2').val();
+    if(searchTerm.length >= 3){
+      
+    }
     console.log(searchTerm+" "+maxResults);
     getNationalParks(searchTerm, maxResults);
   })
