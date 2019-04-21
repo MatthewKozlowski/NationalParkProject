@@ -4,6 +4,8 @@ const apiKey = 'gGH1CiZxsC2auy7GhfhoGQhadcPEfA1ikB8KyV9j'
 const searchUrl = 'https://developer.nps.gov/api/v1/parks'
 let maxResults = 10;
 
+
+
 function displayNationalParks(responseJson){
   console.log(responseJson);
   $('ol').remove();
@@ -37,14 +39,29 @@ function formatQueryParams(params) {
   return queryItems.join('&');
 }
 
-function getNationalParks(query, maxResults){
+function getNationalParksStateCode(searchTerm, maxResults,){
+  const params = {
+    api_key: apiKey,
+    stateCode: searchTerm,
+    maxResults
+  };
+
+  const queryString = formatQueryParams(params)
+  const url = searchUrl + '?' + queryString;
+
+  fetch(url)
+  .then(response => response.json())
+  .then(responseJson => displayNationalParks(responseJson))
+}
+
+function getNationalParks(query, maxResults,){
   const params = {
     api_key: apiKey,
     q: query,
     maxResults
   };
 
-  
+
   const queryString = formatQueryParams(params)
   const url = searchUrl + '?' + queryString;
 
@@ -58,26 +75,16 @@ function watchForm1(){
     event.preventDefault();
     let searchTerm = $('#js-search-term1').val();
     maxResults = $('#js-max-results1').val();
-    console.log(searchTerm+" "+maxResults);
-    getNationalParks(searchTerm, maxResults);
+    if(searchTerm.includes(',') || searchTerm.length === 2){
+      console.log(searchTerm+" "+maxResults);
+      getNationalParksStateCode(searchTerm,maxResults);
+    } else{
+      console.log(searchTerm+" "+maxResults);
+      getNationalParks(searchTerm, maxResults);
+      }
   })
 }
-
-function watchForm2(){
-  $('#js-form2').submit(function(event){
-    event.preventDefault();
-    let searchTerm = $('#js-search-term2').val();
-    maxResults = $('#js-max-results2').val();
-    if(searchTerm.length >= 3){
-      
-    }
-    console.log(searchTerm+" "+maxResults);
-    getNationalParks(searchTerm, maxResults);
-  })
-}
-
 $(function(){
   console.log('National Park Search App Loaded! Waiting for user input.');
   watchForm1();
-  watchForm2();
 })
